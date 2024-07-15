@@ -58,6 +58,24 @@ public class IntArraylist {
     return false;
   }
 
+  public int indexOf(int e) {
+    for (int i = 0; i < this.size; i++) {
+      if (this.container[i] == e) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  public int lastIndexOf(int e) {
+    for (int i = this.size - 1; i > -1; i--) {
+      if (this.container[i] == e) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   private void increaseCapacity() {
     this.container = Arrays.copyOf(this.container, this.container.length * 2);
   }
