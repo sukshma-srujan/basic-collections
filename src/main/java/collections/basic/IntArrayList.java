@@ -2,6 +2,7 @@ package collections.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class IntArrayList implements IntIterable {
   private static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
@@ -18,6 +19,12 @@ public class IntArrayList implements IntIterable {
       throw new IllegalArgumentException("initialCapacity must be greater than 0");
     }
     this.container = new int[initialCapacity];
+  }
+
+  public IntArrayList(IntArrayList source) {
+    Objects.requireNonNull(source);
+    this.container = Arrays.copyOf(source.container, source.size);
+    this.size = source.size;
   }
 
   public void add(int e) {
@@ -91,6 +98,8 @@ public class IntArrayList implements IntIterable {
     int newLength = this.container.length << 1;
     if (newLength < 0) {
       newLength = MAX_ARRAY_LENGTH;
+    } else if (newLength == 0) {
+      newLength = CONTAINER_INITIAL_SIZE;
     }
     this.container = Arrays.copyOf(this.container, newLength);
   }
