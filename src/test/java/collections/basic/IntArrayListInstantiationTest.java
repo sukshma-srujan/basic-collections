@@ -29,17 +29,16 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void zeroCapacity_instantiation_succeeds() {
-    assertThatThrownBy(() -> new IntArrayList(0))
-        .isExactlyInstanceOf(IllegalArgumentException.class)
-        .hasMessage("initialCapacity must be greater than 0");
+  void zeroCapacity_instantiation_fails() {
+    IntArrayList intArrayList = new IntArrayList(0);
+    assertThat(intArrayList.size()).isZero();
   }
 
   @Test
-  void negativeCapacity_instantiation_succeeds() {
+  void negativeCapacity_instantiation_fails() {
     assertThatThrownBy(() -> new IntArrayList(-1))
         .isExactlyInstanceOf(IllegalArgumentException.class)
-        .hasMessage("initialCapacity must be greater than 0");
+        .hasMessage("initialCapacity must not be negative");
   }
 
   @Test

@@ -16,8 +16,8 @@ public class IntArrayList implements IntIterable {
   }
 
   public IntArrayList(int initialCapacity) {
-    if (initialCapacity < 1) {
-      throw new IllegalArgumentException("initialCapacity must be greater than 0");
+    if (initialCapacity < 0) {
+      throw new IllegalArgumentException("initialCapacity must not be negative");
     }
     this.container = new int[initialCapacity];
   }
