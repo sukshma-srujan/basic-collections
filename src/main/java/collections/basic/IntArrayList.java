@@ -13,6 +13,13 @@ public class IntArrayList implements IntIterable {
     this.container = new int[CONTAINER_INITIAL_SIZE];
   }
 
+  public IntArrayList(int initialCapacity) {
+    if (initialCapacity < 1) {
+      throw new IllegalArgumentException("initialCapacity must be greater than 0");
+    }
+    this.container = new int[initialCapacity];
+  }
+
   public void add(int e) {
     ensureCapacity();
     this.container[this.size] = e;
