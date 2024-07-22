@@ -145,4 +145,18 @@ public class IntArrayList implements IntIterable {
       return container[pos++];
     }
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof IntArrayList other)) {
+      return false;
+    }
+    if (this.size != other.size) {
+      return false;
+    }
+    return Arrays.equals(this.container, 0, this.size, other.container, 0, this.size);
+  }
 }
