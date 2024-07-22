@@ -41,9 +41,9 @@
         <artifactId>fmt-maven-plugin</artifactId>
         <version>${fmt-maven-plugin.version}</version>
         <configuration>
-          <additionalSourceDirectories>
-            <param>${project.basedir}/target/generated-sources</param>
-          </additionalSourceDirectories>
+<!--          <additionalSourceDirectories>-->
+<!--            <param>${project.basedir}/target/generated-sources</param>-->
+<!--          </additionalSourceDirectories>-->
         </configuration>
         <executions>
           <execution>

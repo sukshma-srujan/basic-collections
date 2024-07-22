@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class IntArrayListTest {
@@ -58,7 +60,6 @@ class IntArrayListTest {
     IntArrayList source = new IntArrayList();
     source.add(378);
     IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.size()).isOne();
     assertThat(actual.toArray()).isEqualTo(new int[] {378});
   }
 
@@ -70,7 +71,6 @@ class IntArrayListTest {
     source.add(-1);
     source.add(0);
     IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.size()).isEqualTo(4);
     assertThat(actual.toArray()).isEqualTo(new int[] {378, -103, -1, 0});
   }
 
@@ -90,5 +90,36 @@ class IntArrayListTest {
     Object containerActual = containerField.get(actual);
 
     assertThat(containerActual).isNotSameAs(containerSource);
+  }
+
+  @Test
+  void nullList_instantiation_fails() {
+    assertThatThrownBy(() -> new IntArrayList((List<Integer>) null))
+        .isExactlyInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void emptyList_instantiation_succeeds() {
+    ArrayList<Integer> source = new ArrayList<>();
+    IntArrayList actual = new IntArrayList(source);
+    assertThat(actual.size()).isZero();
+  }
+
+  @Test
+  void singletonList_instantiation_succeeds() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(873);
+    IntArrayList actual = new IntArrayList(source);
+    assertThat(actual.toArray()).isEqualTo(new int[] {873});
+  }
+
+  @Test
+  void nSizeList_instantiation_succeeds() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(89487);
+    source.add(873);
+    source.add(42);
+    IntArrayList actual = new IntArrayList(source);
+    assertThat(actual.toArray()).isEqualTo(new int[] {89487, 873, 42});
   }
 }

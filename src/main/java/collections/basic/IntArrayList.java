@@ -2,6 +2,7 @@ package collections.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class IntArrayList implements IntIterable {
@@ -25,6 +26,16 @@ public class IntArrayList implements IntIterable {
     Objects.requireNonNull(source);
     this.container = Arrays.copyOf(source.container, source.size);
     this.size = source.size;
+  }
+
+  public IntArrayList(List<Integer> source) {
+    Objects.requireNonNull(source);
+    this.container = new int[source.size()];
+    int i = 0;
+    for (Integer e : source) {
+      this.container[i++] = Objects.requireNonNull(e);
+    }
+    this.size = source.size();
   }
 
   public void add(int e) {
