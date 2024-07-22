@@ -1,20 +1,20 @@
 package collections.basic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class IntArraylist {
+public class IntArrayList implements IntIterable {
+  private static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
   private static final int CONTAINER_INITIAL_SIZE = 10;
   private int[] container;
   private int size;
 
-  public IntArraylist() {
+  public IntArrayList() {
     this.container = new int[CONTAINER_INITIAL_SIZE];
   }
 
   public void add(int e) {
-    if (this.size == this.container.length) {
-      increaseCapacity();
-    }
+    ensureCapacity();
     this.container[this.size] = e;
     this.size++;
   }
@@ -23,12 +23,16 @@ public class IntArraylist {
     if (pos >= this.size || pos < 0) {
       throw new IndexOutOfBoundsException(pos);
     }
-    if (this.size == this.container.length) {
-      increaseCapacity();
-    }
+    ensureCapacity();
     shiftRight(pos);
     this.container[pos] = e;
     this.size++;
+  }
+
+  private void ensureCapacity() {
+    if (this.size == this.container.length) {
+      increaseCapacity();
+    }
   }
 
   private void shiftRight(int pos) {
@@ -77,6 +81,41 @@ public class IntArraylist {
   }
 
   private void increaseCapacity() {
-    this.container = Arrays.copyOf(this.container, this.container.length * 2);
+    int newLength = this.container.length << 1;
+    if (newLength < 0) {
+      newLength = MAX_ARRAY_LENGTH;
+    }
+    this.container = Arrays.copyOf(this.container, newLength);
+  }
+
+  public int[] toArray() {
+    return Arrays.copyOf(this.container, this.size);
+  }
+
+  public ArrayList<Integer> toPlatform() {
+    ArrayList<Integer> platformList = new ArrayList<>();
+    for (int i = 0; i < this.size; i++) {
+      platformList.add(this.container[i]);
+    }
+    return platformList;
+  }
+
+  @Override
+  public IntIterator iterator() {
+    return new IntIteratorImpl();
+  }
+
+  private class IntIteratorImpl implements IntIterator {
+    private int pos = 0;
+
+    @Override
+    public boolean hasNext() {
+      return pos < size;
+    }
+
+    @Override
+    public int next() {
+      return container[pos++];
+    }
   }
 }
