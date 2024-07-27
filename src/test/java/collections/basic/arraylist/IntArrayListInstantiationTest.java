@@ -1,17 +1,19 @@
-package collections.basic;
+package collections.basic.arraylist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import collections.basic.IntArrayList;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class IntArrayListInstantiationTest {
   @Test
   void instantiation_succeeds() {
-    assertThat(new IntArrayList()).isNotNull();
+    Assertions.assertThat(new IntArrayList()).isNotNull();
   }
 
   @Test
@@ -30,15 +32,16 @@ class IntArrayListInstantiationTest {
 
   @Test
   void zeroCapacity_instantiation_fails() {
-    IntArrayList intArrayList = new IntArrayList(0);
-    assertThat(intArrayList.size()).isZero();
+    assertThatThrownBy(() -> new IntArrayList(0))
+        .isExactlyInstanceOf(IllegalArgumentException.class)
+        .hasMessage("initialCapacity must not be less than 1");
   }
 
   @Test
   void negativeCapacity_instantiation_fails() {
     assertThatThrownBy(() -> new IntArrayList(-1))
         .isExactlyInstanceOf(IllegalArgumentException.class)
-        .hasMessage("initialCapacity must not be negative");
+        .hasMessage("initialCapacity must not be less than 1");
   }
 
   @Test

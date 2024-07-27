@@ -1,7 +1,8 @@
-package collections.basic;
+package collections.basic.arraylist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import collections.basic.IntArrayList;
 import org.junit.jupiter.api.Test;
 
 class IntArrayListEqualsAndHashCodeTest {

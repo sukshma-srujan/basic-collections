@@ -1,8 +1,9 @@
-package collections.basic;
+package collections.basic.arraylist;
 
-import static collections.basic.TestHelperIntArrayList.assertSizeAndElements;
+import static collections.basic.arraylist.TestHelperIntArrayList.assertSizeAndElements;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import collections.basic.IntArrayList;
 import org.junit.jupiter.api.Test;
 
 class IntArrayListAddAtTest {

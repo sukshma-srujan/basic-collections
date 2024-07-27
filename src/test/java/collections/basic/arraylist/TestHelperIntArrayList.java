@@ -1,7 +1,9 @@
-package collections.basic;
+package collections.basic.arraylist;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+
+import collections.basic.IntArrayList;
 
 class TestHelperIntArrayList {
   static void assertSizeAndElements(int[] expected, IntArrayList list) {
