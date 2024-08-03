@@ -2,6 +2,7 @@ package collections.basic;
 
 import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class IntHashSet implements IntIterable {
   private static final int[] EMPTY_ARR = new int[0];
@@ -22,6 +23,14 @@ public class IntHashSet implements IntIterable {
     }
     this.loadThreshold = DEFAULT_LOAD_FACTOR;
     this.buckets = new IntSetNode[determineBucketCount(initialCapacity, this.loadThreshold)];
+  }
+
+  public IntHashSet(IntHashSet source) {
+    Objects.requireNonNull(source);
+    this.loadThreshold = source.loadThreshold;
+    this.buckets = new IntSetNode[source.buckets.length];
+    this.count = 0;
+    source.forEach(this::add);
   }
 
   private int determineBucketCount(int capacity, float threshold) {
@@ -214,7 +223,7 @@ public class IntHashSet implements IntIterable {
     @Override
     public int next() {
       if (this.pos < this.elements.length) {
-        return this.elements[pos++];
+        return this.elements[this.pos++];
       }
       throw new NoSuchElementException();
     }
