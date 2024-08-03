@@ -7,13 +7,16 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class IntHashMap<V> {
   private static final int INITIAL_CAPACITY = 8;
+  private static final float DEFAULT_LOAD_FACTOR = 1.75f;
 
-  private final IntMapNode<V>[] buckets;
+  private final float allowedLoadFactor;
+  private IntMapNode<V>[] buckets;
   private int count = 0;
 
   @SuppressWarnings("unchecked")
   public IntHashMap() {
-    buckets = new IntMapNode[INITIAL_CAPACITY];
+    this.allowedLoadFactor = DEFAULT_LOAD_FACTOR;
+    this.buckets = new IntMapNode[INITIAL_CAPACITY];
   }
 
   private int hash(int key) {
@@ -30,10 +33,74 @@ public class IntHashMap<V> {
 
     int bucketIdx = hash(key);
     IntMapNode<V> newNode = new IntMapNode<>(key, value);
-    newNode.next = buckets[bucketIdx];
-    buckets[bucketIdx] = newNode;
-    count++;
+    newNode.next = this.buckets[bucketIdx];
+    this.buckets[bucketIdx] = newNode;
+    this.count++;
+    rehashIfNeeded();
     return null;
+  }
+
+  private void rehashIfNeeded() {
+    float loadOnMap = (float) this.count / (float) this.buckets.length;
+    if (loadOnMap > allowedLoadFactor) {
+      rehash();
+    }
+  }
+
+  private void showBucketContent() {
+    int maxLen = Integer.toString(this.buckets.length).length();
+
+    int bucketIdx = 0;
+    for (IntMapNode<V> oldBucket : this.buckets) {
+      IntMapNode<V> node = oldBucket;
+      StringBuilder sb = new StringBuilder();
+      sb.append('[')
+          .append(leftPad("" + bucketIdx, maxLen))
+          .append(']')
+          .append(' ')
+          .append('-')
+          .append('-')
+          .append('>')
+          .append(' ');
+      sb.append('(');
+      boolean hasEntry = false;
+      while (node != null) {
+        if (hasEntry) {
+          sb.append(',').append(' ');
+        }
+        sb.append(node.key);
+        node = node.next;
+        hasEntry = true;
+      }
+      sb.append(')');
+      System.out.println(sb);
+      bucketIdx++;
+    }
+  }
+
+  private String leftPad(String s, int len) {
+    if (s.length() >= len) {
+      return s;
+    }
+    return " ".repeat(len - s.length()) + s;
+  }
+
+  @SuppressWarnings("unchecked")
+  private void rehash() {
+    int newBucketCount = this.buckets.length << 1;
+    IntMapNode<V>[] oldBuckets = this.buckets;
+    this.buckets = new IntMapNode[newBucketCount];
+
+    for (IntMapNode<V> oldBucket : oldBuckets) {
+      IntMapNode<V> node = oldBucket;
+      while (node != null) {
+        IntMapNode<V> currentNode = node;
+        node = node.next;
+        int bucketIdx = hash(currentNode.key);
+        currentNode.next = this.buckets[bucketIdx];
+        this.buckets[bucketIdx] = currentNode;
+      }
+    }
   }
 
   public boolean contains(int key) {
