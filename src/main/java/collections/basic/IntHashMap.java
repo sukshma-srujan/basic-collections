@@ -34,7 +34,7 @@ public class IntHashMap<V> {
     return null;
   }
 
-  public boolean containsKey(int key) {
+  public boolean contains(int key) {
     return findByKey(key) != null;
   }
 
