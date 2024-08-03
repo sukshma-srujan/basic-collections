@@ -8,7 +8,8 @@ import java.util.Objects;
 
 public class IntArrayList implements IntIterable {
   private static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
-  private static final int CONTAINER_INITIAL_SIZE = 10;
+  private static final int CONTAINER_INITIAL_SIZE = 8;
+
   private int[] container;
   private int size;
 

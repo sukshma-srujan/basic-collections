@@ -7,21 +7,22 @@ import java.util.Objects;
 public class IntHashSet implements IntIterable {
   private static final int[] EMPTY_ARR = new int[0];
   private static final int INITIAL_CAPACITY = 8;
-  private static final float DEFAULT_LOAD_FACTOR = 2.75f;
+  private static final float DEFAULT_LOAD_THRESHOLD = 2.75f;
 
   private final float loadThreshold;
   private IntSetNode[] buckets;
   private int count;
 
   public IntHashSet() {
-    this(INITIAL_CAPACITY);
+    this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
+    this.buckets = new IntSetNode[INITIAL_CAPACITY];
   }
 
   public IntHashSet(int initialCapacity) {
     if (initialCapacity < 1) {
       throw new IllegalArgumentException("initialCapacity must not be less than 1");
     }
-    this.loadThreshold = DEFAULT_LOAD_FACTOR;
+    this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
     this.buckets = new IntSetNode[determineBucketCount(initialCapacity, this.loadThreshold)];
   }
 

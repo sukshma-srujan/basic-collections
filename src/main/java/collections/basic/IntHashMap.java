@@ -6,17 +6,40 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 public class IntHashMap<V> {
-  private static final int INITIAL_CAPACITY = 8;
-  private static final float DEFAULT_LOAD_FACTOR = 1.75f;
+  private static final int INITIAL_BUCKET_COUNT = 8;
+  private static final float DEFAULT_LOAD_THRESHOLD = 2.75f;
 
-  private final float allowedLoadFactor;
+  private final float loadThreshold;
   private IntMapNode<V>[] buckets;
   private int count = 0;
 
-  @SuppressWarnings("unchecked")
   public IntHashMap() {
-    this.allowedLoadFactor = DEFAULT_LOAD_FACTOR;
-    this.buckets = new IntMapNode[INITIAL_CAPACITY];
+    this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
+    this.buckets = nodeArrayOfSize(INITIAL_BUCKET_COUNT);
+  }
+
+  public IntHashMap(int initialCapacity) {
+    if (initialCapacity < 1) {
+      throw new IllegalArgumentException("initialCapacity must not be less than 1");
+    }
+    this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
+    this.buckets = nodeArrayOfSize(determineBucketCount(initialCapacity, this.loadThreshold));
+  }
+
+  @SuppressWarnings("unchecked")
+  private IntMapNode<V>[] nodeArrayOfSize(int size) {
+    return new IntMapNode[size];
+  }
+
+  private int determineBucketCount(int capacity, float threshold) {
+    int bucketCount = (int) Math.ceil(capacity / threshold);
+    int bucketCountPowerOfTwo = 1;
+
+    while (bucketCountPowerOfTwo < bucketCount) {
+      bucketCountPowerOfTwo <<= 1;
+    }
+
+    return bucketCountPowerOfTwo;
   }
 
   private int hash(int key) {
@@ -42,7 +65,7 @@ public class IntHashMap<V> {
 
   private void rehashIfNeeded() {
     float loadOnMap = (float) this.count / (float) this.buckets.length;
-    if (loadOnMap > allowedLoadFactor) {
+    if (loadOnMap > loadThreshold) {
       rehash();
     }
   }
@@ -85,11 +108,10 @@ public class IntHashMap<V> {
     return " ".repeat(len - s.length()) + s;
   }
 
-  @SuppressWarnings("unchecked")
   private void rehash() {
     int newBucketCount = this.buckets.length << 1;
     IntMapNode<V>[] oldBuckets = this.buckets;
-    this.buckets = new IntMapNode[newBucketCount];
+    this.buckets = nodeArrayOfSize(newBucketCount);
 
     for (IntMapNode<V> oldBucket : oldBuckets) {
       IntMapNode<V> node = oldBucket;
