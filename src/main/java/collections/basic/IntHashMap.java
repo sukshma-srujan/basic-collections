@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@SuppressWarnings("unused")
 public class IntHashMap<V> {
   private static final int INITIAL_BUCKET_COUNT = 8;
   private static final float DEFAULT_LOAD_THRESHOLD = 2.75f;
@@ -194,7 +193,6 @@ public class IntHashMap<V> {
   }
 
   public Set<IntEntry<V>> entrySet() {
-    HashMap<?, ?> hashMap = new HashMap<>();
     HashSet<IntEntry<V>> entrySet = new HashSet<>(this.size());
     for (IntMapNode<V> bucket : buckets) {
       IntMapNode<V> node = bucket;
