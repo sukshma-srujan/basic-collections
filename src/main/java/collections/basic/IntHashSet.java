@@ -13,8 +13,26 @@ public class IntHashSet implements IntIterable {
   private int count;
 
   public IntHashSet() {
+    this(INITIAL_CAPACITY);
+  }
+
+  public IntHashSet(int initialCapacity) {
+    if (initialCapacity < 1) {
+      throw new IllegalArgumentException("initialCapacity must not be less than 1");
+    }
     this.loadThreshold = DEFAULT_LOAD_FACTOR;
-    this.buckets = new IntSetNode[INITIAL_CAPACITY];
+    this.buckets = new IntSetNode[determineBucketCount(initialCapacity, this.loadThreshold)];
+  }
+
+  private int determineBucketCount(int capacity, float threshold) {
+    int bucketCount = (int) Math.ceil(capacity / threshold);
+    int bucketCountPowerOfTwo = 1;
+
+    while (bucketCountPowerOfTwo < bucketCount) {
+      bucketCountPowerOfTwo <<= 1;
+    }
+
+    return bucketCountPowerOfTwo;
   }
 
   private int bucketIdx(int key) {
