@@ -6,12 +6,12 @@ import java.util.HashMap;
 public class IntHashMap<V> {
   private static final int INITIAL_CAPACITY = 8;
 
-  private final IntNode<V>[] buckets;
+  private final IntMapNode<V>[] buckets;
   private int count = 0;
 
   @SuppressWarnings("unchecked")
   public IntHashMap() {
-    buckets = new IntNode[INITIAL_CAPACITY];
+    buckets = new IntMapNode[INITIAL_CAPACITY];
   }
 
   private int hash(int key) {
@@ -19,7 +19,7 @@ public class IntHashMap<V> {
   }
 
   public V put(int key, V value) {
-    IntNode<V> byKey;
+    IntMapNode<V> byKey;
     if ((byKey = findByKey(key)) != null) {
       V old = byKey.value;
       byKey.value = value;
@@ -27,7 +27,7 @@ public class IntHashMap<V> {
     }
 
     int bucketIdx = hash(key);
-    IntNode<V> newNode = new IntNode<>(key, value);
+    IntMapNode<V> newNode = new IntMapNode<>(key, value);
     newNode.next = buckets[bucketIdx];
     buckets[bucketIdx] = newNode;
     count++;
@@ -39,7 +39,7 @@ public class IntHashMap<V> {
   }
 
   public V get(int key) {
-    IntNode<V> node = findByKey(key);
+    IntMapNode<V> node = findByKey(key);
     return node != null ? node.value : null;
   }
 
@@ -49,8 +49,8 @@ public class IntHashMap<V> {
 
   public V remove(int key) {
     int bucketIdx = hash(key);
-    IntNode<V> previous = null;
-    IntNode<V> current = buckets[bucketIdx];
+    IntMapNode<V> previous = null;
+    IntMapNode<V> current = buckets[bucketIdx];
     while ((current != null && current.key != key)) {
       previous = current;
       current = current.next;
@@ -71,8 +71,8 @@ public class IntHashMap<V> {
 
   public HashMap<Integer, V> toPlatform() {
     HashMap<Integer, V> platformMap = new HashMap<>(size());
-    for (IntNode<V> bucket : buckets) {
-      IntNode<V> node = bucket;
+    for (IntMapNode<V> bucket : buckets) {
+      IntMapNode<V> node = bucket;
       while (node != null) {
         platformMap.put(node.key, node.value);
         node = node.next;
@@ -81,9 +81,21 @@ public class IntHashMap<V> {
     return platformMap;
   }
 
-  private IntNode<V> findByKey(int key) {
+  public IntHashSet keySet() {
+    IntHashSet intHashSet = new IntHashSet();
+    for (IntMapNode<V> bucket : buckets) {
+      IntMapNode<V> node = bucket;
+      while (node != null) {
+        intHashSet.add(node.key);
+        node = node.next;
+      }
+    }
+    return intHashSet;
+  }
+
+  private IntMapNode<V> findByKey(int key) {
     int hash = hash(key);
-    IntNode<V> node = buckets[hash];
+    IntMapNode<V> node = buckets[hash];
     while (node != null) {
       if (node.key == key) {
         return node;
@@ -93,12 +105,12 @@ public class IntHashMap<V> {
     return null;
   }
 
-  private static class IntNode<V> {
+  private static class IntMapNode<V> {
     int key;
     V value;
-    IntNode<V> next;
+    IntMapNode<V> next;
 
-    private IntNode(int key, V value) {
+    private IntMapNode(int key, V value) {
       this.key = key;
       this.value = value;
     }
