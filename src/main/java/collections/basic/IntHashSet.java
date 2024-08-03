@@ -86,44 +86,44 @@ public class IntHashSet implements IntIterable {
     }
   }
 
-  @SuppressWarnings("unused")
-  private void showBucketContent() {
-    int maxLen = Integer.toString(this.buckets.length).length();
-
-    int bucketIdx = 0;
-    for (IntSetNode oldBucket : this.buckets) {
-      IntSetNode node = oldBucket;
-      StringBuilder sb = new StringBuilder();
-      sb.append('[')
-          .append(leftPad("" + bucketIdx, maxLen))
-          .append(']')
-          .append(' ')
-          .append('-')
-          .append('-')
-          .append('>')
-          .append(' ');
-      sb.append('(');
-      boolean hasEntry = false;
-      while (node != null) {
-        if (hasEntry) {
-          sb.append(',').append(' ');
-        }
-        sb.append(node.key);
-        node = node.next;
-        hasEntry = true;
-      }
-      sb.append(')');
-      System.out.println(sb);
-      bucketIdx++;
-    }
-  }
-
-  private String leftPad(String s, int len) {
-    if (s.length() >= len) {
-      return s;
-    }
-    return " ".repeat(len - s.length()) + s;
-  }
+  // @SuppressWarnings("unused")
+  // private void showBucketContent() {
+  //   int maxLen = Integer.toString(this.buckets.length).length();
+  //
+  //   int bucketIdx = 0;
+  //   for (IntSetNode oldBucket : this.buckets) {
+  //     IntSetNode node = oldBucket;
+  //     StringBuilder sb = new StringBuilder();
+  //     sb.append('[')
+  //         .append(leftPad("" + bucketIdx, maxLen))
+  //         .append(']')
+  //         .append(' ')
+  //         .append('-')
+  //         .append('-')
+  //         .append('>')
+  //         .append(' ');
+  //     sb.append('(');
+  //     boolean hasEntry = false;
+  //     while (node != null) {
+  //       if (hasEntry) {
+  //         sb.append(',').append(' ');
+  //       }
+  //       sb.append(node.key);
+  //       node = node.next;
+  //       hasEntry = true;
+  //     }
+  //     sb.append(')');
+  //     System.out.println(sb);
+  //     bucketIdx++;
+  //   }
+  // }
+  //
+  // private String leftPad(String s, int len) {
+  //   if (s.length() >= len) {
+  //     return s;
+  //   }
+  //   return " ".repeat(len - s.length()) + s;
+  // }
 
   public boolean contains(int e) {
     return find(e) != null;

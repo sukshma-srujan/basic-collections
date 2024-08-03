@@ -2,6 +2,7 @@ package collections.basic;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -24,6 +25,14 @@ public class IntHashMap<V> {
     }
     this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
     this.buckets = nodeArrayOfSize(determineBucketCount(initialCapacity, this.loadThreshold));
+  }
+
+  public IntHashMap(IntHashMap<V> source) {
+    Objects.requireNonNull(source);
+    this.loadThreshold = source.loadThreshold;
+    this.buckets = nodeArrayOfSize(source.buckets.length);
+    this.count = 0;
+    source.entrySet().forEach((entry) -> this.put(entry.key(), entry.value()));
   }
 
   @SuppressWarnings("unchecked")
@@ -70,43 +79,43 @@ public class IntHashMap<V> {
     }
   }
 
-  private void showBucketContent() {
-    int maxLen = Integer.toString(this.buckets.length).length();
-
-    int bucketIdx = 0;
-    for (IntMapNode<V> oldBucket : this.buckets) {
-      IntMapNode<V> node = oldBucket;
-      StringBuilder sb = new StringBuilder();
-      sb.append('[')
-          .append(leftPad("" + bucketIdx, maxLen))
-          .append(']')
-          .append(' ')
-          .append('-')
-          .append('-')
-          .append('>')
-          .append(' ');
-      sb.append('(');
-      boolean hasEntry = false;
-      while (node != null) {
-        if (hasEntry) {
-          sb.append(',').append(' ');
-        }
-        sb.append(node.key);
-        node = node.next;
-        hasEntry = true;
-      }
-      sb.append(')');
-      System.out.println(sb);
-      bucketIdx++;
-    }
-  }
-
-  private String leftPad(String s, int len) {
-    if (s.length() >= len) {
-      return s;
-    }
-    return " ".repeat(len - s.length()) + s;
-  }
+  // private void showBucketContent() {
+  //   int maxLen = Integer.toString(this.buckets.length).length();
+  //
+  //   int bucketIdx = 0;
+  //   for (IntMapNode<V> oldBucket : this.buckets) {
+  //     IntMapNode<V> node = oldBucket;
+  //     StringBuilder sb = new StringBuilder();
+  //     sb.append('[')
+  //         .append(leftPad("" + bucketIdx, maxLen))
+  //         .append(']')
+  //         .append(' ')
+  //         .append('-')
+  //         .append('-')
+  //         .append('>')
+  //         .append(' ');
+  //     sb.append('(');
+  //     boolean hasEntry = false;
+  //     while (node != null) {
+  //       if (hasEntry) {
+  //         sb.append(',').append(' ');
+  //       }
+  //       sb.append(node.key);
+  //       node = node.next;
+  //       hasEntry = true;
+  //     }
+  //     sb.append(')');
+  //     System.out.println(sb);
+  //     bucketIdx++;
+  //   }
+  // }
+  //
+  // private String leftPad(String s, int len) {
+  //   if (s.length() >= len) {
+  //     return s;
+  //   }
+  //   return " ".repeat(len - s.length()) + s;
+  // }
 
   private void rehash() {
     int newBucketCount = this.buckets.length << 1;
