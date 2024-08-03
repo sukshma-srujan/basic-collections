@@ -1,8 +1,9 @@
 package collections.basic;
 
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 
-public class IntHashSet {
+public class IntHashSet implements IntIterable {
   private static final int[] EMPTY_ARR = new int[0];
   private static final int INITIAL_CAPACITY = 8;
 
@@ -110,6 +111,29 @@ public class IntHashSet {
       node = node.next;
     }
     return null;
+  }
+
+  @Override
+  public IntIterator iterator() {
+    return new IntHashSetIterator();
+  }
+
+  private class IntHashSetIterator implements IntIterator {
+    int[] elements = toArray();
+    int pos = 0;
+
+    @Override
+    public boolean hasNext() {
+      return (this.pos < this.elements.length);
+    }
+
+    @Override
+    public int next() {
+      if (this.pos < this.elements.length) {
+        return this.elements[pos++];
+      }
+      throw new NoSuchElementException();
+    }
   }
 
   private static class IntSetNode {
