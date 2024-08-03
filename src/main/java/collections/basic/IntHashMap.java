@@ -1,6 +1,8 @@
 package collections.basic;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 public class IntHashMap<V> {
@@ -93,6 +95,19 @@ public class IntHashMap<V> {
     return intHashSet;
   }
 
+  public Set<IntEntry<V>> entrySet() {
+    HashMap<?, ?> hashMap = new HashMap<>();
+    HashSet<IntEntry<V>> entrySet = new HashSet<>(this.size());
+    for (IntMapNode<V> bucket : buckets) {
+      IntMapNode<V> node = bucket;
+      while (node != null) {
+        entrySet.add(new SimpleIntEntry<>(node.key, node.value));
+        node = node.next;
+      }
+    }
+    return entrySet;
+  }
+
   private IntMapNode<V> findByKey(int key) {
     int hash = hash(key);
     IntMapNode<V> node = buckets[hash];
@@ -105,6 +120,12 @@ public class IntHashMap<V> {
     return null;
   }
 
+  public interface IntEntry<V> {
+    int key();
+
+    V value();
+  }
+
   private static class IntMapNode<V> {
     int key;
     V value;
@@ -115,4 +136,6 @@ public class IntHashMap<V> {
       this.value = value;
     }
   }
+
+  public record SimpleIntEntry<V>(int key, V value) implements IntEntry<V> {}
 }
