@@ -119,8 +119,8 @@ public class IntHashSet implements IntIterable {
   }
 
   private class IntHashSetIterator implements IntIterator {
-    int[] elements = toArray();
-    int pos = 0;
+    private final int[] elements = toArray();
+    private int pos = 0;
 
     @Override
     public boolean hasNext() {

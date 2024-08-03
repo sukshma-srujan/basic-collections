@@ -1,9 +1,9 @@
 package collections.basic.hashset;
 
+import static collections.basic.IteratorTestUtils.toArray;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import collections.basic.IntArrayList;
 import collections.basic.IntHashSet;
 import collections.basic.IntIterator;
 import java.util.NoSuchElementException;
@@ -63,13 +63,5 @@ class IntHashSetIteratorTest {
     assertThat(iteratorContents).containsExactlyInAnyOrder(expectedElements);
     assertThat(intIterator.hasNext()).isFalse();
     assertThatThrownBy(intIterator::next).isInstanceOf(NoSuchElementException.class);
-  }
-
-  static int[] toArray(IntIterator intIterator) {
-    IntArrayList intArrayList = new IntArrayList();
-    while (intIterator.hasNext()) {
-      intArrayList.add(intIterator.next());
-    }
-    return intArrayList.toArray();
   }
 }

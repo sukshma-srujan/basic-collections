@@ -1,42 +1,52 @@
 package collections.basic.arraylist;
 
+import static collections.basic.IteratorTestUtils.toArray;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import collections.basic.IntArrayList;
+import collections.basic.IntIterator;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 
 class IntArrayListIteratorTest {
   @Test
-  void emptyList_iterator_succeeds() {
-    IntArrayList list = new IntArrayList();
-    list.forEach((e) -> fail("unexpected execution of block"));
+  void emptyList_iterator_hasNothing() {
+    IntArrayList intArrayList = new IntArrayList();
+    IntIterator intIterator = intArrayList.iterator();
+
+    assertThat(intIterator.hasNext()).isFalse();
+    assertThatThrownBy(intIterator::next).isInstanceOf(NoSuchElementException.class);
   }
 
   @Test
   void singleton_iterator_succeeds() {
-    IntArrayList list = new IntArrayList();
-    list.add(-140);
+    IntArrayList intArrayList = new IntArrayList();
+    intArrayList.add(-140);
 
-    int[] curIndexContainer = new int[1];
-    int[] elements = new int[1];
-    list.forEach((e) -> elements[curIndexContainer[0]++] = e);
+    IntIterator intIterator = intArrayList.iterator();
+    int[] iteratorContents = toArray(intIterator);
 
-    assertThat(elements).isEqualTo(new int[] {-140});
+    assertThat(iteratorContents).containsExactly(-140);
+    assertThat(intIterator.hasNext()).isFalse();
+    assertThatThrownBy(intIterator::next).isInstanceOf(NoSuchElementException.class);
   }
 
   @Test
   void nSize_iterator_succeeds() {
-    IntArrayList list = new IntArrayList();
-    list.add(140);
-    list.add(-183);
-    list.add(-330);
-    list.add(894);
+    IntArrayList intArrayList = new IntArrayList();
+    int[] expectedElements = new int[120];
+    int idx = 0;
+    for (int i = -60; i < 60; i++) {
+      intArrayList.add(i);
+      expectedElements[idx++] = i;
+    }
 
-    int[] curIndexContainer = new int[1];
-    int[] elements = new int[4];
-    list.forEach((e) -> elements[curIndexContainer[0]++] = e);
+    IntIterator intIterator = intArrayList.iterator();
+    int[] iteratorContents = toArray(intIterator);
 
-    assertThat(elements).isEqualTo(new int[] {140, -183, -330, 894});
+    assertThat(iteratorContents).containsExactlyInAnyOrder(expectedElements);
+    assertThat(intIterator.hasNext()).isFalse();
+    assertThatThrownBy(intIterator::next).isInstanceOf(NoSuchElementException.class);
   }
 }

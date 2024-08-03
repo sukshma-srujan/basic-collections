@@ -3,6 +3,7 @@ package collections.basic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class IntArrayList implements IntIterable {
@@ -133,16 +134,21 @@ public class IntArrayList implements IntIterable {
   }
 
   private class IntIteratorImpl implements IntIterator {
+    private final int size = IntArrayList.this.size;
+    private final int[] elements = IntArrayList.this.container;
     private int pos = 0;
 
     @Override
     public boolean hasNext() {
-      return pos < size;
+      return this.pos < this.size;
     }
 
     @Override
     public int next() {
-      return container[pos++];
+      if (this.pos < this.size) {
+        return this.elements[pos++];
+      }
+      throw new NoSuchElementException();
     }
   }
 
