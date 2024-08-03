@@ -7,14 +7,14 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class IntArrayList implements IntIterable {
-  private static final int MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
-  private static final int CONTAINER_INITIAL_SIZE = 8;
+  private static final int CONTAINER_MAX_LENGTH = Integer.MAX_VALUE - 8;
+  private static final int CONTAINER_INITIAL_LENGTH = 8;
 
   private int[] container;
   private int size;
 
   public IntArrayList() {
-    this.container = new int[CONTAINER_INITIAL_SIZE];
+    this.container = new int[CONTAINER_INITIAL_LENGTH];
   }
 
   public IntArrayList(int initialCapacity) {
@@ -108,11 +108,14 @@ public class IntArrayList implements IntIterable {
   }
 
   private void increaseCapacity() {
+    if (this.container.length == CONTAINER_MAX_LENGTH) {
+      throw new IllegalStateException("Array size reached to maximum");
+    }
     int newLength = this.container.length << 1;
     if (newLength < 0) {
-      newLength = MAX_ARRAY_LENGTH;
+      newLength = CONTAINER_MAX_LENGTH;
     } else if (newLength == 0) {
-      newLength = CONTAINER_INITIAL_SIZE;
+      newLength = CONTAINER_INITIAL_LENGTH;
     }
     this.container = Arrays.copyOf(this.container, newLength);
   }
