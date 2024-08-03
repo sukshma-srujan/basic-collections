@@ -6,11 +6,14 @@ import java.util.NoSuchElementException;
 public class IntHashSet implements IntIterable {
   private static final int[] EMPTY_ARR = new int[0];
   private static final int INITIAL_CAPACITY = 8;
+  private static final float DEFAULT_LOAD_FACTOR = 2.75f;
 
+  private final float loadThreshold;
   private IntSetNode[] buckets;
-  private int size;
+  private int count;
 
   public IntHashSet() {
+    this.loadThreshold = DEFAULT_LOAD_FACTOR;
     this.buckets = new IntSetNode[INITIAL_CAPACITY];
   }
 
@@ -27,8 +30,71 @@ public class IntHashSet implements IntIterable {
     int bucketIdx = bucketIdx(e);
     IntSetNode newNode = new IntSetNode(e, this.buckets[bucketIdx]);
     this.buckets[bucketIdx] = newNode;
-    this.size++;
+    this.count++;
+    rehashSetIfNeeded();
     return true;
+  }
+
+  private void rehashSetIfNeeded() {
+    float currentLoad = (float) this.count / (float) this.buckets.length;
+    if (currentLoad > this.loadThreshold) {
+      rehashSet();
+    }
+  }
+
+  private void rehashSet() {
+    IntSetNode[] oldBuckets = this.buckets;
+    this.buckets = new IntSetNode[oldBuckets.length << 1];
+
+    for (IntSetNode oldBucket : oldBuckets) {
+      IntSetNode node = oldBucket;
+      while (node != null) {
+        IntSetNode curNode = node;
+        node = node.next;
+        int bucketIdx = bucketIdx(curNode.key);
+        curNode.next = this.buckets[bucketIdx];
+        this.buckets[bucketIdx] = curNode;
+      }
+    }
+  }
+
+  @SuppressWarnings("unused")
+  private void showBucketContent() {
+    int maxLen = Integer.toString(this.buckets.length).length();
+
+    int bucketIdx = 0;
+    for (IntSetNode oldBucket : this.buckets) {
+      IntSetNode node = oldBucket;
+      StringBuilder sb = new StringBuilder();
+      sb.append('[')
+          .append(leftPad("" + bucketIdx, maxLen))
+          .append(']')
+          .append(' ')
+          .append('-')
+          .append('-')
+          .append('>')
+          .append(' ');
+      sb.append('(');
+      boolean hasEntry = false;
+      while (node != null) {
+        if (hasEntry) {
+          sb.append(',').append(' ');
+        }
+        sb.append(node.key);
+        node = node.next;
+        hasEntry = true;
+      }
+      sb.append(')');
+      System.out.println(sb);
+      bucketIdx++;
+    }
+  }
+
+  private String leftPad(String s, int len) {
+    if (s.length() >= len) {
+      return s;
+    }
+    return " ".repeat(len - s.length()) + s;
   }
 
   public boolean contains(int e) {
@@ -56,17 +122,17 @@ public class IntHashSet implements IntIterable {
     } else {
       previous.next = node.next;
     }
-    this.size--;
+    this.count--;
 
     return true;
   }
 
   public int size() {
-    return this.size;
+    return this.count;
   }
 
   public boolean isEmpty() {
-    return this.size == 0;
+    return this.count == 0;
   }
 
   public int[] toArray() {
@@ -74,7 +140,7 @@ public class IntHashSet implements IntIterable {
       return EMPTY_ARR;
     }
 
-    int[] arr = new int[this.size];
+    int[] arr = new int[this.count];
     int idx = 0;
     for (IntSetNode bucket : buckets) {
       IntSetNode node = bucket;
@@ -90,7 +156,7 @@ public class IntHashSet implements IntIterable {
     if (isEmpty()) {
       return new HashSet<>(0);
     }
-    HashSet<Integer> platformSet = new HashSet<>(this.size);
+    HashSet<Integer> platformSet = new HashSet<>(this.count);
     for (IntSetNode bucket : buckets) {
       IntSetNode node = bucket;
       while ((node != null)) {
