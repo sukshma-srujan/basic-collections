@@ -198,6 +198,29 @@ public class IntHashSet implements IntIterable {
     return arr;
   }
 
+  @Override
+  public String toString() {
+    if (this.count == 0) {
+      return "[]";
+    }
+
+    StringBuilder sb = new StringBuilder().append('[');
+    boolean isElementAdded = false;
+    for (IntSetNode bucket : this.buckets) {
+      IntSetNode node = bucket;
+      while ((node != null)) {
+        if (isElementAdded) {
+          sb.append(',').append(' ');
+        } else {
+          isElementAdded = true;
+        }
+        sb.append(node.key);
+        node = node.next;
+      }
+    }
+    return sb.append(']').toString();
+  }
+
   public HashSet<Integer> toPlatform() {
     if (isEmpty()) {
       return new HashSet<>(0);
