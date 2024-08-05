@@ -11,7 +11,7 @@ public class IntArrayList implements IntIterable {
   private static final int CONTAINER_INITIAL_LENGTH = 8;
 
   private int[] container;
-  private int size;
+  private int count;
 
   public IntArrayList() {
     this.container = new int[CONTAINER_INITIAL_LENGTH];
@@ -26,8 +26,8 @@ public class IntArrayList implements IntIterable {
 
   public IntArrayList(IntArrayList source) {
     Objects.requireNonNull(source);
-    this.container = Arrays.copyOf(source.container, source.size);
-    this.size = source.size;
+    this.container = Arrays.copyOf(source.container, source.count);
+    this.count = source.count;
   }
 
   public IntArrayList(List<Integer> source) {
@@ -37,51 +37,51 @@ public class IntArrayList implements IntIterable {
     for (Integer e : source) {
       this.container[i++] = Objects.requireNonNull(e);
     }
-    this.size = source.size();
+    this.count = source.size();
   }
 
   public void add(int e) {
     ensureCapacity();
-    this.container[this.size] = e;
-    this.size++;
+    this.container[this.count] = e;
+    this.count++;
   }
 
   public void addAt(int pos, int e) {
-    if (pos >= this.size || pos < 0) {
+    if (pos >= this.count || pos < 0) {
       throw new IndexOutOfBoundsException(pos);
     }
     ensureCapacity();
     shiftRight(pos);
     this.container[pos] = e;
-    this.size++;
+    this.count++;
   }
 
   private void ensureCapacity() {
-    if (this.size == this.container.length) {
+    if (this.count == this.container.length) {
       increaseCapacity();
     }
   }
 
   private void shiftRight(int pos) {
     int k = pos - 1;
-    for (int i = this.size - 1; i > k; i--) {
+    for (int i = this.count - 1; i > k; i--) {
       this.container[i + 1] = this.container[i];
     }
   }
 
   public int size() {
-    return this.size;
+    return this.count;
   }
 
   public int get(int i) {
-    if (i >= this.size || i < 0) {
+    if (i >= this.count || i < 0) {
       throw new IndexOutOfBoundsException(i);
     }
     return this.container[i];
   }
 
   public boolean contains(int e) {
-    for (int i = 0; i < this.size; i++) {
+    for (int i = 0; i < this.count; i++) {
       if (this.container[i] == e) {
         return true;
       }
@@ -90,7 +90,7 @@ public class IntArrayList implements IntIterable {
   }
 
   public int indexOf(int e) {
-    for (int i = 0; i < this.size; i++) {
+    for (int i = 0; i < this.count; i++) {
       if (this.container[i] == e) {
         return i;
       }
@@ -99,7 +99,7 @@ public class IntArrayList implements IntIterable {
   }
 
   public int lastIndexOf(int e) {
-    for (int i = this.size - 1; i > -1; i--) {
+    for (int i = this.count - 1; i > -1; i--) {
       if (this.container[i] == e) {
         return i;
       }
@@ -121,12 +121,12 @@ public class IntArrayList implements IntIterable {
   }
 
   public int[] toArray() {
-    return Arrays.copyOf(this.container, this.size);
+    return Arrays.copyOf(this.container, this.count);
   }
 
   public ArrayList<Integer> toPlatform() {
     ArrayList<Integer> platformList = new ArrayList<>();
-    for (int i = 0; i < this.size; i++) {
+    for (int i = 0; i < this.count; i++) {
       platformList.add(this.container[i]);
     }
     return platformList;
@@ -138,7 +138,7 @@ public class IntArrayList implements IntIterable {
   }
 
   private class IntIteratorImpl implements IntIterator {
-    private final int size = IntArrayList.this.size;
+    private final int size = IntArrayList.this.count;
     private final int[] elements = IntArrayList.this.container;
     private int pos = 0;
 
@@ -164,9 +164,26 @@ public class IntArrayList implements IntIterable {
     if (!(obj instanceof IntArrayList other)) {
       return false;
     }
-    if (this.size != other.size) {
+    if (this.count != other.count) {
       return false;
     }
-    return Arrays.equals(this.container, 0, this.size, other.container, 0, this.size);
+    return Arrays.equals(this.container, 0, this.count, other.container, 0, this.count);
+  }
+
+  @Override
+  public String toString() {
+    if (this.count == 0) {
+      return "[]";
+    }
+    StringBuilder sb = new StringBuilder();
+    sb.append('[');
+    for (int i = 0; i < this.count; i++) {
+      if (i > 0) {
+        sb.append(',').append(' ');
+      }
+      sb.append(this.container[i]);
+    }
+    sb.append(']');
+    return sb.toString();
   }
 }
