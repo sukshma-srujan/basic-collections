@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class IntHashSet implements IntIterable {
   private static final int[] EMPTY_ARR = new int[0];
-  private static final int INITIAL_CAPACITY = 8;
+  private static final int INITIAL_BUCKET_COUNT = 8;
   private static final float DEFAULT_LOAD_THRESHOLD = 2.75f;
 
   private final float loadThreshold;
@@ -15,7 +15,7 @@ public class IntHashSet implements IntIterable {
 
   public IntHashSet() {
     this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
-    this.buckets = new IntSetNode[INITIAL_CAPACITY];
+    this.buckets = new IntSetNode[INITIAL_BUCKET_COUNT];
   }
 
   public IntHashSet(int initialCapacity) {
@@ -32,6 +32,24 @@ public class IntHashSet implements IntIterable {
     this.buckets = new IntSetNode[source.buckets.length];
     this.count = 0;
     source.forEach(this::add);
+  }
+
+  public IntHashSet(Iterable<Integer> source) {
+    this(source, false);
+  }
+
+  public IntHashSet(Iterable<Integer> source, boolean coerceNullToZero) {
+    Objects.requireNonNull(source);
+    this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
+    this.buckets = new IntSetNode[INITIAL_BUCKET_COUNT];
+    this.count = 0;
+    for (Integer val : source) {
+      if (coerceNullToZero) {
+        val = val == null ? 0 : val;
+      }
+      Objects.requireNonNull(val);
+      this.add(val);
+    }
   }
 
   private int determineBucketCount(int capacity, float threshold) {

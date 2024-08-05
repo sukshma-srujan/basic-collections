@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import collections.basic.IntHashSet;
+import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
 class IntHashSetInstantiationTest {
@@ -169,5 +170,140 @@ class IntHashSetInstantiationTest {
     assertThat(intHashSet.contains(1002)).isTrue();
     assertThat(intHashSet.contains(1003)).isTrue();
     assertThat(intHashSet.size()).isEqualTo(152);
+  }
+
+  @Test
+  void instantiation_usingEmptySet_succeeds() {
+    HashSet<Integer> source = new HashSet<>();
+    IntHashSet intHashSet = new IntHashSet(source);
+    assertThat(intHashSet.size()).isZero();
+  }
+
+  @Test
+  void instantiation_usingEmptySet_createdSetIsUsable() {
+    HashSet<Integer> source = new HashSet<>();
+    IntHashSet intHashSet = new IntHashSet(source);
+    assertThat(intHashSet.size()).isZero();
+
+    for (int e = -15; e < 15; e++) {
+      intHashSet.add(e);
+    }
+
+    assertThat(intHashSet.size()).isEqualTo(30);
+    for (int e = -15; e < 15; e++) {
+      assertThat(intHashSet.contains(e)).isTrue();
+    }
+  }
+
+  @Test
+  void instantiation_usingNonEmptySet_succeeds() {
+    HashSet<Integer> source = new HashSet<>();
+    for (int e = -15; e < 15; e++) {
+      source.add(e);
+    }
+    IntHashSet intHashSet = new IntHashSet(source);
+    assertThat(intHashSet.size()).isEqualTo(30);
+    for (int e = -15; e < 15; e++) {
+      assertThat(intHashSet.contains(e)).isTrue();
+    }
+  }
+
+  @Test
+  void instantiation_usingNonEmptySetContainingNull_fails() {
+    HashSet<Integer> source = new HashSet<>();
+    for (int e = -15; e < 15; e++) {
+      source.add(e);
+    }
+    source.add(null);
+
+    assertThatThrownBy(() -> new IntHashSet(source)).isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void instantiation_usingNonEmptySet_setIsUsable() {
+    HashSet<Integer> source = new HashSet<>();
+    for (int e = -15; e < 0; e++) {
+      source.add(e);
+    }
+    IntHashSet intHashSet = new IntHashSet(source);
+    assertThat(intHashSet.size()).isEqualTo(15);
+
+    for (int e = 0; e < 15; e++) {
+      intHashSet.add(e);
+    }
+
+    assertThat(intHashSet.size()).isEqualTo(30);
+    for (int e = -15; e < 15; e++) {
+      assertThat(intHashSet.contains(e)).isTrue();
+    }
+  }
+
+  @Test
+  void instantiation_usingEmptySetWithCoercingNullToZero_succeeds() {
+    HashSet<Integer> source = new HashSet<>();
+    IntHashSet intHashSet = new IntHashSet(source, true);
+    assertThat(intHashSet.size()).isZero();
+  }
+
+  @Test
+  void instantiation_usingEmptySetWithCoercingNullToZero_createdSetIsUsable() {
+    HashSet<Integer> source = new HashSet<>();
+    IntHashSet intHashSet = new IntHashSet(source, true);
+    assertThat(intHashSet.size()).isZero();
+
+    for (int e = -15; e < 15; e++) {
+      intHashSet.add(e);
+    }
+
+    assertThat(intHashSet.size()).isEqualTo(30);
+    for (int e = -15; e < 15; e++) {
+      assertThat(intHashSet.contains(e)).isTrue();
+    }
+  }
+
+  @Test
+  void instantiation_usingNonEmptySetWithCoercingNullToZero_succeeds() {
+    HashSet<Integer> source = new HashSet<>();
+    for (int e = -15; e < 15; e++) {
+      source.add(e);
+    }
+    IntHashSet intHashSet = new IntHashSet(source, true);
+    assertThat(intHashSet.size()).isEqualTo(30);
+    for (int e = -15; e < 15; e++) {
+      assertThat(intHashSet.contains(e)).isTrue();
+    }
+  }
+
+  @Test
+  void instantiation_usingNonEmptySetContainingNullWithCoercingNullToZero_succeeds() {
+    HashSet<Integer> source = new HashSet<>();
+    for (int e = -15; e < 0; e++) {
+      source.add(e);
+    }
+    source.add(null);
+
+    IntHashSet intHashSet = new IntHashSet(source, true);
+    assertThat(intHashSet.size()).isEqualTo(16);
+  }
+
+  @Test
+  void instantiation_usingNonEmptySetContainingNullWithCoercingNullToZero_createdSetIsUsable() {
+    HashSet<Integer> source = new HashSet<>();
+    for (int e = -15; e < 0; e++) {
+      source.add(e);
+    }
+    source.add(null);
+
+    IntHashSet intHashSet = new IntHashSet(source, true);
+    assertThat(intHashSet.size()).isEqualTo(16);
+
+    for (int e = 1; e < 15; e++) {
+      intHashSet.add(e);
+    }
+
+    assertThat(intHashSet.size()).isEqualTo(30);
+    for (int e = -15; e < 0; e++) {
+      assertThat(intHashSet.contains(e)).isTrue();
+    }
   }
 }
