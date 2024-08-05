@@ -2,7 +2,6 @@ package collections.basic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -28,16 +27,6 @@ public class IntArrayList implements IntIterable {
     Objects.requireNonNull(source);
     this.container = Arrays.copyOf(source.container, source.count);
     this.count = source.count;
-  }
-
-  public IntArrayList(List<Integer> source) {
-    Objects.requireNonNull(source);
-    this.container = new int[source.size()];
-    int i = 0;
-    for (Integer e : source) {
-      this.container[i++] = Objects.requireNonNull(e);
-    }
-    this.count = source.size();
   }
 
   public void add(int e) {
@@ -185,5 +174,22 @@ public class IntArrayList implements IntIterable {
     }
     sb.append(']');
     return sb.toString();
+  }
+
+  public static IntArrayList from(Iterable<Integer> source) {
+    return from(source, false);
+  }
+
+  public static IntArrayList from(Iterable<Integer> source, boolean coerceNullToZero) {
+    Objects.requireNonNull(source);
+    IntArrayList intArrayList = new IntArrayList();
+    for (Integer e : source) {
+      if (coerceNullToZero && e == null) {
+        e = 0;
+      }
+      Objects.requireNonNull(e);
+      intArrayList.add(e);
+    }
+    return intArrayList;
   }
 }

@@ -6,14 +6,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import collections.basic.IntArrayList;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class IntArrayListInstantiationTest {
   @Test
   void instantiation_succeeds() {
-    Assertions.assertThat(new IntArrayList()).isNotNull();
+    assertThat(new IntArrayList()).isNotNull();
   }
 
   @Test
@@ -46,7 +44,7 @@ class IntArrayListInstantiationTest {
 
   @Test
   void nullIntList_instantiation_fails() {
-    assertThatThrownBy(() -> new IntArrayList((IntArrayList) null))
+    assertThatThrownBy(() -> new IntArrayList(null))
         .isExactlyInstanceOf(NullPointerException.class);
   }
 
@@ -95,33 +93,93 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void nullList_instantiation_fails() {
-    assertThatThrownBy(() -> new IntArrayList((List<Integer>) null))
+  void null_from_fails() {
+    assertThatThrownBy(() -> IntArrayList.from(null))
         .isExactlyInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void emptyList_instantiation_succeeds() {
+  void emptyList_from_createsEmptyList() {
     ArrayList<Integer> source = new ArrayList<>();
-    IntArrayList actual = new IntArrayList(source);
+    IntArrayList actual = IntArrayList.from(source);
     assertThat(actual.size()).isZero();
   }
 
   @Test
-  void singletonList_instantiation_succeeds() {
+  void singletonList_from_createsSingletonList() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(873);
-    IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.toArray()).isEqualTo(new int[] {873});
+    IntArrayList actual = IntArrayList.from(source);
+    assertThat(actual.toArray()).containsExactly(873);
   }
 
   @Test
-  void nSizeList_instantiation_succeeds() {
+  void singletonList_from_whenContainsNull_fails() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(null);
+
+    assertThatThrownBy(() -> IntArrayList.from(source)).isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void nSizeList_from_succeeds() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(89487);
     source.add(873);
     source.add(42);
-    IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.toArray()).isEqualTo(new int[] {89487, 873, 42});
+    IntArrayList actual = IntArrayList.from(source);
+    assertThat(actual.toArray()).containsExactly(89487, 873, 42);
+  }
+
+  @Test
+  void nSizeList_from_whenContainsAtLeastOneNull_fails() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(89487);
+    source.add(873);
+    source.add(null);
+    source.add(42);
+
+    assertThatThrownBy(() -> IntArrayList.from(source)).isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void null_from_withCoerceNullToZero_fails() {
+    assertThatThrownBy(() -> IntArrayList.from(null))
+        .isExactlyInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void emptyList_from_withCoerceNullToZero_createsEmptyList() {
+    ArrayList<Integer> source = new ArrayList<>();
+    IntArrayList actual = IntArrayList.from(source, true);
+    assertThat(actual.size()).isZero();
+  }
+
+  @Test
+  void singletonList_from_withCoerceNullToZero_createsSingletonList() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(873);
+    IntArrayList actual = IntArrayList.from(source);
+    assertThat(actual.toArray()).containsExactly(873);
+  }
+
+  @Test
+  void singletonList_from_withNullElementAndCoerceNullToZero_createsSingletonList() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(null);
+    IntArrayList actual = IntArrayList.from(source, true);
+    assertThat(actual.toArray()).containsExactly(0);
+  }
+
+  @Test
+  void nSizeList_from_withAtLeastOneNullElementAndCoerceNullToZero_succeeds() {
+    ArrayList<Integer> source = new ArrayList<>();
+    source.add(89487);
+    source.add(873);
+    source.add(null);
+    source.add(42);
+
+    IntArrayList actual = IntArrayList.from(source, true);
+    assertThat(actual.toArray()).containsExactly(89487, 873, 0, 42);
   }
 }
