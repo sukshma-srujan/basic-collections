@@ -34,24 +34,6 @@ public class IntHashSet implements IntIterable {
     source.forEach(this::add);
   }
 
-  public IntHashSet(Iterable<Integer> source) {
-    this(source, false);
-  }
-
-  public IntHashSet(Iterable<Integer> source, boolean coerceNullToZero) {
-    Objects.requireNonNull(source);
-    this.loadThreshold = DEFAULT_LOAD_THRESHOLD;
-    this.buckets = new IntSetNode[INITIAL_BUCKET_COUNT];
-    this.count = 0;
-    for (Integer val : source) {
-      if (coerceNullToZero) {
-        val = val == null ? 0 : val;
-      }
-      Objects.requireNonNull(val);
-      this.add(val);
-    }
-  }
-
   private int determineBucketCount(int capacity, float threshold) {
     int bucketCount = (int) Math.ceil(capacity / threshold);
     int bucketCountPowerOfTwo = 1;
@@ -279,5 +261,22 @@ public class IntHashSet implements IntIterable {
       this.key = key;
       this.next = next;
     }
+  }
+
+  public static IntHashSet from(Iterable<Integer> source) {
+    return from(source, false);
+  }
+
+  public static IntHashSet from(Iterable<Integer> source, boolean coerceNullToZero) {
+    Objects.requireNonNull(source);
+    IntHashSet intHashSet = new IntHashSet();
+    for (Integer val : source) {
+      if (coerceNullToZero) {
+        val = val == null ? 0 : val;
+      }
+      Objects.requireNonNull(val);
+      intHashSet.add(val);
+    }
+    return intHashSet;
   }
 }
