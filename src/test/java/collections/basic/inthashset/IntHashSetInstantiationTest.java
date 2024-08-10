@@ -31,14 +31,14 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void initialCapacityOne_instantiation_succeeds() {
+  void initialCapacityOne_instantiation_createsEmptySet() {
     IntHashSet intHashSet = new IntHashSet(1);
 
     assertThat(intHashSet.size()).isZero();
   }
 
   @Test
-  void initialCapacityOne_instantiation_createdSetIsUsable() {
+  void initialCapacityOne_instantiation_createdEmptySetIsUsable() {
     IntHashSet intHashSet = new IntHashSet(1);
     intHashSet.add(87);
 
@@ -47,7 +47,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void initialCapacityOne_instantiation_createdSetCanAccommodateAnyNumberOfElements() {
+  void initialCapacityOne_instantiation_createdEmptySetCanAccommodateAnyNumberOfElements() {
     IntHashSet intHashSet = new IntHashSet(1);
     for (int e = -4; e < 4; e++) {
       intHashSet.add(e);
@@ -60,14 +60,14 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void initialCapacityMoreThanOne_instantiation_succeeds() {
+  void initialCapacityMoreThanOne_instantiation_createsEmptySet() {
     IntHashSet intHashSet = new IntHashSet(33);
 
     assertThat(intHashSet.size()).isZero();
   }
 
   @Test
-  void initialCapacityMoreThanOne_instantiation_createdSetIsUsable() {
+  void initialCapacityMoreThanOne_instantiation_createdEmptySetIsUsable() {
     IntHashSet intHashSet = new IntHashSet(41);
     intHashSet.add(34);
 
@@ -76,7 +76,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void initialCapacityMoreThanOne_instantiation_createdSetCanAccommodateAnyNumberOfElements() {
+  void initialCapacityMoreThanOne_instantiation_createdEmptySetCanAccommodateAnyNumberOfElements() {
     IntHashSet intHashSet = new IntHashSet(41);
     for (int e = -40; e < 40; e++) {
       intHashSet.add(e);
@@ -98,7 +98,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void emptyIntHashSet_instantiation_createdSetCanAccommodateMoreElements() {
+  void emptyIntHashSet_instantiation_createdEmptySetCanAccommodateMoreElements() {
     IntHashSet source = new IntHashSet();
 
     IntHashSet intHashSet = new IntHashSet(source);
@@ -122,7 +122,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void singletonIntHashSet_instantiation_createdSetCanAccommodateMoreElements() {
+  void singletonIntHashSet_instantiation_createdSingletonSetCanAccommodateMoreElements() {
     IntHashSet source = new IntHashSet();
     source.add(167);
 
@@ -149,14 +149,13 @@ class IntHashSetInstantiationTest {
     IntHashSet intHashSet = new IntHashSet(source);
 
     assertThat(intHashSet.size()).isEqualTo(150);
-
     for (int e : expectedElements) {
       assertThat(intHashSet.contains(e)).isTrue();
     }
   }
 
   @Test
-  void nElementIntHashSet_instantiation_createdSetCanAccommodateMoreElements() {
+  void nElementIntHashSet_instantiation_createdNElementSetCanAccommodateMoreElements() {
     IntHashSet source = new IntHashSet();
     int[] expectedElements = new int[150];
     int idx = 0;
@@ -166,15 +165,12 @@ class IntHashSetInstantiationTest {
     }
 
     IntHashSet intHashSet = new IntHashSet(source);
-
-    assertThat(intHashSet.size()).isEqualTo(150);
+    intHashSet.add(1002);
+    intHashSet.add(1003);
 
     for (int e : expectedElements) {
       assertThat(intHashSet.contains(e)).isTrue();
     }
-
-    intHashSet.add(1002);
-    intHashSet.add(1003);
     assertThat(intHashSet.contains(1002)).isTrue();
     assertThat(intHashSet.contains(1003)).isTrue();
     assertThat(intHashSet.size()).isEqualTo(152);
@@ -183,12 +179,14 @@ class IntHashSetInstantiationTest {
   @Test
   void emptyIterable_from_createsEmptySet() {
     HashSet<Integer> source = new HashSet<>();
+
     IntHashSet intHashSet = IntHashSet.from(source);
+
     assertThat(intHashSet.size()).isZero();
   }
 
   @Test
-  void emptyIterable_from_createdSetIsUsable() {
+  void emptyIterable_from_createdEmptySetIsUsable() {
     HashSet<Integer> source = new HashSet<>();
 
     IntHashSet intHashSet = IntHashSet.from(source);
@@ -216,7 +214,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void singletonIterable_from_createsSetIsUsable() {
+  void singletonIterable_from_createdEmptySetIsUsable() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(-46);
 
@@ -233,7 +231,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void nSizeIterableContainingDuplicateElements_from_createsSetWithDistinctElements() {
+  void nElementIterableContainingDuplicateElements_from_createsSetWithDistinctElements() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(-46);
     source.add(53);
@@ -249,7 +247,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void nSizeIterable_from_createsNSizeSet() {
+  void nElementIterable_from_createsNElementSet() {
     HashSet<Integer> source = new HashSet<>();
     for (int e = -15; e < 15; e++) {
       source.add(e);
@@ -264,7 +262,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void nSizeIterable_from_createdSetIsUsable() {
+  void nElementIterable_from_createdNElementSetIsUsable() {
     HashSet<Integer> source = new HashSet<>();
     for (int e = -15; e < 2; e++) {
       source.add(e);
@@ -282,7 +280,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void nSizeIterableWithNullElement_from_fails() {
+  void nElementIterableWithNullElement_from_fails() {
     HashSet<Integer> source = new HashSet<>();
     for (int e = -15; e < 15; e++) {
       source.add(e);
@@ -295,7 +293,9 @@ class IntHashSetInstantiationTest {
   @Test
   void emptyIterableWithCoerceNullToZero_from_createsEmptySet() {
     HashSet<Integer> source = new HashSet<>();
+
     IntHashSet intHashSet = IntHashSet.from(source, true);
+
     assertThat(intHashSet.size()).isZero();
   }
 
@@ -326,7 +326,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void singletonIterableWithCoerceNullToZero_from_createsSingletonSetIsUsable() {
+  void singletonIterableWithCoerceNullToZero_from_createdSingletonSetIsUsable() {
     HashSet<Integer> source = new HashSet<>();
     source.add(98);
 
@@ -355,7 +355,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void singletonIterableContainingNullWithCoerceNullToZero_from_createsSingletonSetIsUsable() {
+  void singletonIterableContainingNullWithCoerceNullToZero_from_createdSingletonSetIsUsable() {
     HashSet<Integer> source = new HashSet<>();
     source.add(null);
 
@@ -372,7 +372,8 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void nSizeIterableContainingNullWithCoercingNullToZero_from_createsNSizeSetContainingZero() {
+  void
+      nElementIterableContainingNullWithCoercingNullToZero_from_createsNElementSetContainingZero() {
     HashSet<Integer> source = new HashSet<>();
     for (int e = -15; e < 0; e++) {
       source.add(e);
@@ -388,7 +389,7 @@ class IntHashSetInstantiationTest {
   }
 
   @Test
-  void nSizeIterableContainingNullWithCoercingNullToZero_from_createdNSizeSetIsUsable() {
+  void nElementIterableContainingNullWithCoercingNullToZero_from_createdNElementSetIsUsable() {
     HashSet<Integer> source = new HashSet<>();
     for (int e = -15; e < 0; e++) {
       source.add(e);
