@@ -51,6 +51,11 @@
             <goals>
               <goal>format</goal>
             </goals>
+            <configuration>
+              <additionalSourceDirectories>
+                <!--<param>src/test/java</param>-->
+              </additionalSourceDirectories>
+            </configuration>
           </execution>
         </executions>
       </plugin>

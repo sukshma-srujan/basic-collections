@@ -8,8 +8,8 @@ public interface IntIterable {
 
   default void forEach(IntConsumer action) {
     Objects.requireNonNull(action);
-
-    for (IntIterator ii = iterator(); ii.hasNext(); ) {
+    IntIterator ii = iterator();
+    while (ii.hasNext()) {
       action.accept(ii.next());
     }
   }
