@@ -10,22 +10,16 @@ import org.junit.jupiter.api.Test;
 
 class IntArrayListInstantiationTest {
   @Test
-  void instantiation_succeeds() {
-    assertThat(new IntArrayList()).isNotNull();
+  void noArg_instantiation_createsEmptyList() {
+    assertThat(new IntArrayList().size()).isZero();
   }
 
   @Test
-  void instantiation_zeroSize() {
-    IntArrayList list = new IntArrayList();
-    assertThat(list.size()).isZero();
-  }
+  void someCapacity_instantiation_createsEmptyListWithSpecifiedCapacity() {
+    IntArrayList intArrayList = new IntArrayList(3);
 
-  @Test
-  void someCapacity_instantiation_succeeds() {
-    assertThat(new IntArrayList(3))
-        .isNotNull()
-        .extracting("container")
-        .isEqualTo(new int[] {0, 0, 0});
+    assertThat(intArrayList.size()).isZero();
+    assertThat(intArrayList).isNotNull().extracting("container").isEqualTo(new int[] {0, 0, 0});
   }
 
   @Test
@@ -49,33 +43,71 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void emptyIntList_instantiation_succeeds() {
+  void emptyIntList_instantiation_createsEmptyList() {
     IntArrayList source = new IntArrayList();
-    IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.size()).isZero();
+
+    IntArrayList intArrayList = new IntArrayList(source);
+
+    assertThat(intArrayList.size()).isZero();
   }
 
   @Test
-  void singletonIntList_instantiation_succeeds() {
+  void emptyIntList_instantiation_createdEmptyListIsUsable() {
+    IntArrayList source = new IntArrayList();
+
+    IntArrayList intArrayList = new IntArrayList(source);
+    for (int e = -7; e < 7; e++) {
+      intArrayList.add(e);
+    }
+
+    assertThat(intArrayList.size()).isEqualTo(14);
+    for (int e = -7; e < 7; e++) {
+      assertThat(intArrayList.contains(e)).isTrue();
+    }
+  }
+
+  @Test
+  void singletonIntList_instantiation_createsSingletonList() {
     IntArrayList source = new IntArrayList();
     source.add(378);
-    IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.toArray()).isEqualTo(new int[] {378});
+
+    IntArrayList intArrayList = new IntArrayList(source);
+
+    assertThat(intArrayList.size()).isOne();
+    assertThat(intArrayList.contains(378)).isTrue();
   }
 
   @Test
-  void nSizeIntList_instantiation_succeeds() {
+  void nSizeIntList_instantiation_createsNSizeList() {
     IntArrayList source = new IntArrayList();
-    source.add(378);
-    source.add(-103);
-    source.add(-1);
-    source.add(0);
-    IntArrayList actual = new IntArrayList(source);
-    assertThat(actual.toArray()).isEqualTo(new int[] {378, -103, -1, 0});
+    for (int e = -11; e < 11; e++) {
+      source.add(e);
+    }
+
+    IntArrayList intArrayList = new IntArrayList(source);
+
+    assertThat(intArrayList.size()).isEqualTo(22);
+    for (int e = -11; e < 11; e++) {
+      assertThat(intArrayList.contains(e)).isTrue();
+    }
   }
 
   @Test
-  void nSizeIntList_instantiation_createsItsOwnArray() throws Exception {
+  void nSizeIntListWithDuplicates_instantiation_createsNSizeListWithSameElements() {
+    int[] elements = new int[] {6, -6, 4, 2, 0, 2};
+    IntArrayList source = new IntArrayList();
+    for (int e : elements) {
+      source.add(e);
+    }
+
+    IntArrayList intArrayList = new IntArrayList(source);
+
+    assertThat(intArrayList.size()).isEqualTo(6);
+    assertThat(intArrayList.toArray()).isEqualTo(elements);
+  }
+
+  @Test
+  void nSizeIntList_instantiation_createdListHasItsOwnContainer() throws Exception {
     IntArrayList source = new IntArrayList();
     source.add(378);
     source.add(-103);
@@ -93,20 +125,20 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void null_from_fails() {
+  void nullIterable_from_fails() {
     assertThatThrownBy(() -> IntArrayList.from(null))
         .isExactlyInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void emptyList_from_createsEmptyList() {
+  void emptyIterable_from_createsEmptyList() {
     ArrayList<Integer> source = new ArrayList<>();
     IntArrayList actual = IntArrayList.from(source);
     assertThat(actual.size()).isZero();
   }
 
   @Test
-  void singletonList_from_createsSingletonList() {
+  void singletonIterable_from_createsSingletonList() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(873);
     IntArrayList actual = IntArrayList.from(source);
@@ -114,7 +146,7 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void singletonList_from_whenContainsNull_fails() {
+  void singletonIterableContainingNull_from_fails() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(null);
 
@@ -122,17 +154,19 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void nSizeList_from_succeeds() {
+  void nSizeIterable_from_succeeds() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(89487);
     source.add(873);
     source.add(42);
+
     IntArrayList actual = IntArrayList.from(source);
+
     assertThat(actual.toArray()).containsExactly(89487, 873, 42);
   }
 
   @Test
-  void nSizeList_from_whenContainsAtLeastOneNull_fails() {
+  void nSizeIterableContainingNull_from_fails() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(89487);
     source.add(873);
@@ -143,28 +177,33 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void null_from_withCoerceNullToZero_fails() {
+  void nullIterableWithCoerceNullToZero_from_fails() {
     assertThatThrownBy(() -> IntArrayList.from(null))
         .isExactlyInstanceOf(NullPointerException.class);
   }
 
   @Test
-  void emptyList_from_withCoerceNullToZero_createsEmptyList() {
+  void emptyIterableWithCoerceNullToZero_from_createsEmptyList() {
     ArrayList<Integer> source = new ArrayList<>();
+
     IntArrayList actual = IntArrayList.from(source, true);
+
     assertThat(actual.size()).isZero();
   }
 
   @Test
-  void singletonList_from_withCoerceNullToZero_createsSingletonList() {
+  void singletonIterableWithCoerceNullToZero_from_createsSingletonList() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(873);
+
     IntArrayList actual = IntArrayList.from(source);
+
     assertThat(actual.toArray()).containsExactly(873);
   }
 
   @Test
-  void singletonList_from_withNullElementAndCoerceNullToZero_createsSingletonList() {
+  void
+      singletonIterableContainingNullWithCoerceNullToZero_from_createsSingletonListContainingZero() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(null);
     IntArrayList actual = IntArrayList.from(source, true);
@@ -172,7 +211,7 @@ class IntArrayListInstantiationTest {
   }
 
   @Test
-  void nSizeList_from_withAtLeastOneNullElementAndCoerceNullToZero_succeeds() {
+  void nSizeIterableContainingNullWithCoerceNullToZero_from_createsNSizeListContainingZero() {
     ArrayList<Integer> source = new ArrayList<>();
     source.add(89487);
     source.add(873);
@@ -180,6 +219,7 @@ class IntArrayListInstantiationTest {
     source.add(42);
 
     IntArrayList actual = IntArrayList.from(source, true);
+
     assertThat(actual.toArray()).containsExactly(89487, 873, 0, 42);
   }
 }

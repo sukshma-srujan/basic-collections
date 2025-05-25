@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class IntArrayList implements IntIterable {
-  private static final int CONTAINER_MAX_LENGTH = Integer.MAX_VALUE - 8;
+  private static final int CONTAINER_MAX_LENGTH = Integer.MAX_VALUE - 16;
   private static final int CONTAINER_INITIAL_LENGTH = 8;
 
   private int[] container;
