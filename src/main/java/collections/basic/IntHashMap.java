@@ -78,43 +78,45 @@ public class IntHashMap<V> {
     }
   }
 
-  // private void showBucketContent() {
-  //   int maxLen = Integer.toString(this.buckets.length).length();
-  //
-  //   int bucketIdx = 0;
-  //   for (IntMapNode<V> oldBucket : this.buckets) {
-  //     IntMapNode<V> node = oldBucket;
-  //     StringBuilder sb = new StringBuilder();
-  //     sb.append('[')
-  //         .append(leftPad("" + bucketIdx, maxLen))
-  //         .append(']')
-  //         .append(' ')
-  //         .append('-')
-  //         .append('-')
-  //         .append('>')
-  //         .append(' ');
-  //     sb.append('(');
-  //     boolean hasEntry = false;
-  //     while (node != null) {
-  //       if (hasEntry) {
-  //         sb.append(',').append(' ');
-  //       }
-  //       sb.append(node.key);
-  //       node = node.next;
-  //       hasEntry = true;
-  //     }
-  //     sb.append(')');
-  //     System.out.println(sb);
-  //     bucketIdx++;
-  //   }
-  // }
-  //
-  // private String leftPad(String s, int len) {
-  //   if (s.length() >= len) {
-  //     return s;
-  //   }
-  //   return " ".repeat(len - s.length()) + s;
-  // }
+  /*-
+  private void showBucketContent() {
+    int maxLen = Integer.toString(this.buckets.length).length();
+
+    int bucketIdx = 0;
+    for (IntMapNode<V> oldBucket : this.buckets) {
+      IntMapNode<V> node = oldBucket;
+      StringBuilder sb = new StringBuilder();
+      sb.append('[')
+          .append(leftPad("" + bucketIdx, maxLen))
+          .append(']')
+          .append(' ')
+          .append('-')
+          .append('-')
+          .append('>')
+          .append(' ');
+      sb.append('(');
+      boolean hasEntry = false;
+      while (node != null) {
+        if (hasEntry) {
+          sb.append(',').append(' ');
+        }
+        sb.append(node.key);
+        node = node.next;
+        hasEntry = true;
+      }
+      sb.append(')');
+      System.out.println(sb);
+      bucketIdx++;
+    }
+  }
+
+  private String leftPad(String s, int len) {
+    if (s.length() >= len) {
+      return s;
+    }
+    return " ".repeat(len - s.length()) + s;
+  }
+  */
 
   private void rehash() {
     int newBucketCount = this.buckets.length << 1;
